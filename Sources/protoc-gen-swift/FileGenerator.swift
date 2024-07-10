@@ -113,6 +113,14 @@ class FileGenerator {
             p.print(neededImports)
         }
 
+        let neededCustomImports = generatorOptions.extraModuleImports
+        if !neededCustomImports.isEmpty {
+            p.print()
+            for i in neededCustomImports {
+                p.print("import \(i)\n")
+            }
+        }
+
         p.print()
         generateVersionCheck(printer: &p)
 

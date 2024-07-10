@@ -49,6 +49,7 @@ class GeneratorOptions {
     }
   }
 
+  let extraModuleImports: [String]
   let outputNaming: OutputNaming
   let protoToModuleMappings: ProtoFileToModuleMappings
   let visibility: Visibility
@@ -59,6 +60,7 @@ class GeneratorOptions {
   let visibilitySourceSnippet: String
 
   init(parameter: any CodeGeneratorParameter) throws {
+    var externalModuleImports: [String] = []
     var outputNaming: OutputNaming = .fullPath
     var moduleMapPath: String?
     var visibility: Visibility = .internal
@@ -111,6 +113,12 @@ class GeneratorOptions {
           throw GenerationError.invalidParameterValue(name: pair.key,
                                                       value: pair.value)
         }
+      case "ExtraModuleImports":
+        if !pair.value.isEmpty {
+            externalModuleImports.append(pair.value)
+        } else {
+          throw GenerationError.invalidParameterValue(name: pair.key, value: pair.value)
+        }
       default:
         throw GenerationError.unknownParameter(name: pair.key)
       }
@@ -140,6 +148,7 @@ class GeneratorOptions {
       visibilitySourceSnippet = "package "
     }
 
+    self.extraModuleImports = externalModuleImports
     self.implementationOnlyImports = implementationOnlyImports
     self.experimentalStripNonfunctionalCodegen = experimentalStripNonfunctionalCodegen
 
